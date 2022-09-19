@@ -1,0 +1,656 @@
+
+
+
+/****************************************************************************************
+
+                                    GENERAL
+
+****************************************************************************************/
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #060104;
+    color: rgb(236, 236, 236);
+    overflow-x: hidden;
+}
+  
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+.App{
+    width: 70%;
+    margin: auto;
+    padding: 15px;
+}
+p{
+    font-weight: 300;
+}
+a{
+    color : white;
+    text-decoration: none;
+    transition: 0.4s all;
+}
+a:hover{
+    opacity: 0.5 !important;
+}
+
+
+input{
+    box-sizing: border-box;
+}
+
+
+
+select, input{
+    width: 100%;
+    background: linear-gradient(45deg,#311a65,transparent);
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    color: var(--font-color);
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+ input:disabled{
+    background: linear-gradient(45deg,#140830,transparent);
+}
+
+
+/****************************************************************************************
+
+                                    HEADER
+
+****************************************************************************************/
+
+.App-header img{
+    width: 100px;
+    margin-left: -20px;
+}
+.App-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.App-header a{
+    margin-left: 25px;
+    opacity: 0.7;
+    font-weight: 300;
+    font-size: 14px;
+}
+.App-header a.active{
+    opacity: 1;
+    font-weight: 400;
+}
+
+
+
+/****************************************************************************************
+
+                                    DASHBOARD CONTENT
+
+****************************************************************************************/
+#createAds{
+    border-radius: 25px;
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.4s all;
+    padding: 10px 20px;
+    background-color: #3412a4;
+    margin-left: 35px;
+    box-shadow: 4px 4px 15px rgb(13, 5, 126);
+}
+#createAds:hover{
+    transform: scale(0.97);
+    opacity: 0.7;
+}
+#voiceRecordsHeader{
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+#voiceArrsection{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+.voice-item{
+    width: 28%;
+    padding: 35px 25px;
+    background: rgb(15 11 26);
+    border-radius: 15px;
+    margin-right: 15px;
+
+}
+.voice-item audio{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#noAd{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 300;
+}
+.voice-item div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.voice-item p{
+    margin:0;
+    margin-bottom: 5px;
+    font-size: 13px;
+    margin-top: 5px;
+}
+.voice-item button{
+    float: right;
+    margin-top: 15px;
+    border: 1px solid rgb(160, 8, 8);
+    background-color: none;
+    box-shadow: none;
+    background-color: transparent !important;
+    color: rgb(155, 26, 26);
+    border-radius: 15px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: 0.4s all;
+}
+.voice-item button:hover{
+    background-color: rgb(160, 8, 8) !important;
+    color: white;
+}
+#imageWrapperContainer{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+}
+
+#imageWrapper{
+    display: flex;
+    margin-top: 10vh;
+    height: 75vh;
+    justify-content: center;
+    align-items: center;
+}
+#imageWrapper #homeImage{
+    width:60%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: -4;
+    text-align: right;
+}
+#homeImage img{
+    width: 100%;
+    filter: hue-rotate(10deg)  opacity(0.5);
+    animation: skew 35s infinite;
+    opacity: 0.8;
+}
+#homeContent{
+    min-width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 35%;
+    transform: translate(-50%,-50%);
+}
+
+#circle1{
+    position: fixed;
+    bottom: -120px;
+    width: 150px;
+    right: 80px;
+    animation: circle3 8s infinite;
+    filter:blur(10px)
+}
+
+#circle2{
+    position: absolute;
+    right: 10vw;
+    top: 30vh;
+    opacity: 0.5;
+    width: 20px;
+    animation: circle2 15s infinite;
+}
+#circle3{
+    position: absolute;
+    top: 68vh;
+    left: 10vw;
+    width: 30px;
+    animation: circle1 8s infinite;
+    
+}
+
+
+
+
+/****************************************************************************************
+
+                                    LOADER
+
+****************************************************************************************/
+
+
+#logoBg{
+    width: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 150px;
+}
+
+#logoBody{
+    width: 90px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.App-header .balance{
+    opacity: 1;
+    color: #c8b8f7;
+    border: 1px solid #551fae;
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 14px;
+}
+
+#loader p{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: 180px;
+    max-width: 450px;
+    text-align: center;
+    font-weight: 300;
+    transform: translate(-50%,-50%);
+}
+#loader a{
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+
+
+
+
+/**************************************************************************************
+
+                                     MODAL 
+
+**************************************************************************************/
+  
+
+#depositModal{
+    text-align: left;
+    max-width: 350px !important;
+    max-height: 420px !important;
+    padding: 35px !important;
+}
+
+#depositModal h3{
+    margin-top: 50px;
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
+#depositModal div{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+hr{
+    height: 1px;
+    border: none;
+    background-color: white;
+    opacity: 0.2;
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+#depositModal p{
+    margin-left: 0;
+
+}
+
+#depositModal h4{
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 500;
+}
+#depositModal .deposit{
+    background: #6e32d0;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 3px 3px 5px #190744;
+}
+
+
+#createModal{
+    text-align: left;
+    max-width: 350px !important;
+    max-height: 520px !important;
+    padding: 35px !important;
+}
+
+#createModal h3{
+    margin-top: 50px;
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
+#createModal h4{
+    margin-bottom: 5px;
+    font-size: 13px;
+    font-weight: 400;
+}
+#createModal .create{
+    background: #6e32d0;
+    width: 100%;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 3px 3px 5px #190744;
+    margin-top: 45px;
+}
+
+.close-modal{
+    position: absolute;
+    top: 0;
+    right: 25px;
+    padding: 10px 15px !important;
+    border-radius: 100% !important;
+}
+
+
+.ReactModal__Overlay {
+    background-color: rgb(1 1 1 / 30%) !important;
+}
+
+optgroup { 
+    color: red; 
+} 
+option { 
+    color: black; 
+}
+.ReactModal__Content {
+    background: linear-gradient(100deg,#01000b,#180c21) !important;
+    text-align: center;
+    border-radius: 50px !important;
+    border: 1px solid rgb(27, 19, 62) !important;
+    max-width: 450px;
+    max-height: 450px;
+    margin: auto;
+}
+.ReactModal__Overlay {
+    opacity: 0;
+    transform: translateY(100px);
+    transition: all 500ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.ReactModal__Overlay--before-close {
+    opacity: 0;
+    transform: translateY(100px);
+}
+#tx{
+    width: 200px;
+    height: 200px;
+    filter: invert(1);
+    margin: auto;
+    border-radius: 100%;
+    margin-top: 50px;
+    border: 1px solid rgb(237, 227, 197) !important;
+}
+
+
+.ReactModal__Content h2{
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    margin-top: 230px;
+}
+
+.ReactModal__Content p{
+    font-size: 13px;
+    font-weight: 300;
+    max-width: 80%;
+    opacity: 0.8;
+    margin: auto;
+    margin-top: 0;
+}
+
+.ReactModal__Content button{
+    color:white;
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-top: 25px;
+    cursor: pointer;
+    border: none;
+    background-color: #1a0d3a;
+    transition: 0.4s all;
+}
+
+.ReactModal__Content button:hover{
+    transform: scale(0.9);
+    opacity: 0.7;
+}
+
+
+.span-container {
+    width: 100px;
+    height: 100px;
+    transform: translate(-50% -50%);
+    position: absolute;
+    top: 100px;
+    left: 40%;
+}
+  
+  span {
+    display: block;
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    border-radius: 50%;
+    animation: speed 2s infinite ease-in-out;
+    
+  }
+  
+  .one {
+    background: #8aa4c9;
+    animation-delay: 1.5s;
+  }
+  
+  .two {
+    background: #4175c5;
+    animation-delay: 1s;
+  }
+  
+  .three {
+    background: #110fad;
+    animation-delay: 0.5s;
+  }
+  
+  .four {
+    background: #3412a4;
+  }
+    
+
+
+
+/**************************************************************************************
+
+                                    ANIMATION
+
+**************************************************************************************/
+  
+
+
+@keyframes circle1 {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    20% {
+        transform: translateY(-5px);
+    }
+    40% {
+        transform: translateY(-3px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+    80% {
+        transform: translateY(5px);
+    }
+}
+
+
+@keyframes circle2 {
+    0%, 100% {
+        transform: translateY(0) translateX(0px);
+    }
+    20% {
+        transform: translateY(-5px) translateX(15px);
+    }
+    40% {
+        transform: translateY(-3px) translateX(10px);
+    }
+    60% {
+        transform: translateY(-10px) translateX(-15px);
+    }
+    80% {
+        transform: translateY(5px) translateX(2px);
+    }
+}
+
+@keyframes circle3 {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    20% {
+        transform: translateY(-8px);
+    }
+    40% {
+        transform: translateY(3px);
+    }
+    60% {
+        transform: translateY(10px);
+    }
+    80% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes skew {
+    0%{
+     transform: skew(0deg, 0deg);
+    }
+    30%{
+     transform: skew(-25deg, 5deg);
+    }
+    55%{
+     transform: skew(10deg, 10deg);
+    }
+    80%{
+     transform: skew(20deg, -10deg);
+    }
+    100%{
+     transform: skew(0deg, 0deg);
+   }
+ }
+ 
+ @keyframes speed {
+    0% {
+      transform: translate(0%);
+      border-radius: 50%;
+    }
+  
+    25% {
+      transform: translate(150%) scale(0.5);
+      border-radius: 0%;
+    }
+  
+    50% {
+      transform: translate(150%, 150%);
+      border-radius: 50%;
+    }
+  
+    75% {
+      transform: translate(0, 150%) scale(0.5);
+      border-radius: 0%;
+    }
+  }
+  
+  @media screen and (max-width: 500px) {
+    .span-container {
+    left: 40%;
+  }
+  }
+
+
+  
+.span-container {
+    width: 100px;
+    height: 100px;
+    transform: translate(-50% -50%);
+    position: absolute;
+    top: 100px;
+    left: 40%;
+}
+  
+  span {
+    display: block;
+    position: absolute;
+    width: 40%;
+    height: 40%;
+    border-radius: 50%;
+    animation: speed 2s infinite ease-in-out;
+    
+  }
+  
+  .one {
+    background: #8aa4c9;
+    animation-delay: 1.5s;
+  }
+  
+  .two {
+    background: #4175c5;
+    animation-delay: 1s;
+  }
+  
+  .three {
+    background: #110fad;
+    animation-delay: 0.5s;
+  }
+  
+  .four {
+    background: #3412a4;
+  }
+    

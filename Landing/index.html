@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <title> Æ Voice</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <link rel="shortcut icon" href="assets/img/logo.ico"/>
+    <link href="assets/plugin/animate.min.css" type="text/css" rel="stylesheet"/>
+    <link href="assets/plugin/bootstrap.min.css" type="text/css" rel="stylesheet"/>
+    <link href="assets/plugin/themify.css" type="text/css" rel="stylesheet"/>
+    <link href="index.css" type="text/css" rel="stylesheet"/>
+    <script type="text/javascript" src="assets/plugin/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/plugin/sweetalert.min.js"></script>
+    <script type="text/javascript" src="assets/plugin/fontfile.js"></script>
+
+</head>
+
+<body>
+
+    <div class="content">
+        <div id='contentSection'>
+            <div id='canvasSection'></div>
+            <div id='buttonSection'>
+                <a href='{{env("MODZY_APP_URL")}}'><button class='btn btn-primary nav-btn about-btn hover' type='button'> <i class="ti ti-heart"></i><span> Audience App </span></button></a>
+                <a href='https://github.com/jensenlim2481284/MSCCS'><button class='btn btn-primary nav-btn about-btn' type='button'> <i class="ti ti-crown"></i><span> Dashboard </span></button></a>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="assets/plugin/threejs.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+</body>
+</html>

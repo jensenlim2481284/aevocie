@@ -1,0 +1,28 @@
+{
+    "short_name": "Æ Voice",
+    "name": "Æ Voice",
+    "start_url": ".",
+    "display": "standalone",
+    "status_bar": "#311b58",
+    "theme_color": "#ffffff",
+    "orientation": "portrait",
+    "background_color": "#060104",
+    "description": "Reinvent the way of advertising",
+    "icons": [
+        {
+            "src": "favicon.ico",
+            "sizes": "48x48",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "static/media/icon/logo192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "static/media/icon/logo256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        }
+    ]
+}
