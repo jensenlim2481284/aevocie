@@ -167,7 +167,8 @@ const App = () => {
 
     if(voiceRecords){
         voiceRecords.forEach((record, index) => {
-            setVoiceArrCheck('1');
+            if(voiceArrCheck === null )
+                setVoiceArrCheck('1');
             voiceArr.push(
               <div className='voice-item' key={index}>
                     <audio controls>

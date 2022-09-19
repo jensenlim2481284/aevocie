@@ -1,5 +1,6 @@
 
 
+import Modal from 'react-modal';
 import { Web3Storage } from 'web3.storage'
 import network from "./configs/network";
 import useAeternitySDK from './hooks/useAeternitySDK';
@@ -9,234 +10,186 @@ import { AeSdkAepp, AE_AMOUNT_FORMATS, AeSdk, Node, MemoryAccount } from '@aeter
 import './App.css';
 import logo from './assets/logo.png';
 import logoBG from './assets/logo.gif';
-import aci from './assets/aci/aci.json';
+import Circle1 from "./assets/circle1.png";
+import Circle2 from "./assets/circle2.png";
 import logoBody from './assets/logo_body.png';
+import EncodedACI from './assets/aci/aci.json';
+import HeaderImage from "./assets/landingbg.png";
 
+const aenumber = 1000000000000000000;
 const WalletConnectionStatus = Object.freeze({ Error: 0, Connecting: 1, Connected: 2 });
 const App = () => {
 
-	const [client, clientReady] = useAeternitySDK();
-	const [address, setAddress] = useState(null);
-	const [balance, setBalance] = useState('loading...');
-	const [contractBalance, setContractBalance] = useState('loading...');
+    // Wallet, AE and client state
+    const [client, clientReady] = useAeternitySDK();
+    const [balance, setBalance] = useState('loading...');
 	const [errorMsg, setErrorMsg] = useState<string>("");
-	const [status, setStatus] = useState(WalletConnectionStatus.Connecting)
-	const [contract, setContract] = useState<any>("")
-	const [deposit, setDeposit] = useState<string>("")
-	const [voiceID, setVoiceID] = useState<string>("")
-	const [voiceLink, setVoiceLink] = useState<string>("")
-	const [reward, setReward] = useState<string>("")
-	const [maxReward, setMaxReward] = useState<string>("")
-	const [answer, setAnswer] = useState<string>("A")
-	const [ans, setAns] = useState<string>("")
-	const [voiceRecords, setVoiceRecords] = useState<any>("")
-	const [selectedFile, setSelectedFile] = useState<FileList | null>(null)
-	const [completedPlayer, setCompletedPlayer] = useState<any>("")
-    const ACI = JSON.stringify(aci);
-    const contractAddress = 'ct_2398Y2S8Dg1Scjzxj7kJYvwMMzbt5sh7FFj1JuN59kWooDapjv';
 	const aeSdk: MutableRefObject<AeSdkAepp | null> = useRef(null);
-    const arr = [<></>];
+	const [contractBalance, setContractBalance] = useState('loading...');
+	const [status, setStatus] = useState(WalletConnectionStatus.Connecting)
 
+	// Smart contract state
+    const voiceArr = [<></>];
+    const ACIJson = JSON.stringify(EncodedACI);
+	const [contract, setContract] = useState<any>("")
+	const [voiceRecords, setVoiceRecords] = useState<any>("")
+	const [voiceArrCheck, setVoiceArrCheck] = useState<string>(null)
 
-    const updateAccountBalance = async function(){
-        if (!aeSdk.current) return;
-        const _address: any = await aeSdk.current.address()
-        setAddress(_address);
-        const _balance: any = await aeSdk.current.getBalance(_address, {
-            format: AE_AMOUNT_FORMATS.AE
-        });
-        setBalance(_balance);
-    }
+    // Voice setting 
+    let SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+    let SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+    let control = ['play', 'next', 'previous', 'stop', 'repeat', 'a', 'b', 'c', 'd', 'e', 'f'];
+    let grammar = '#JSGF V1.0; grammar control; public <control> = ' + control.join(' | ') + ';';
+    let recognition = new SpeechRecognition()
+    let recognitionList = new SpeechGrammarList()
+    recognitionList.addFromString(grammar, 1)
+    recognition.grammars = recognitionList
+    recognition.lang = 'en-US'
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
+    // Modal state 
+    const [modalIsOpen, setIsOpen] = useState(true);
 
+    // Modal function 
+    function openModal() {  setIsOpen(true);}
+    function closeModal() {  setIsOpen(false);}
+
+    // Smart contract method - get voice records 
 	const getVoiceRecords = async function () {
         let result = (await contract.methods.get_voice_records()).decodedResult;
         console.log(result);
         setVoiceRecords(result)
     }
 
-	const fetchAccountDetails = async function (walletNetworkId: string) {
-    if (!aeSdk.current) return;
-		if (status !== WalletConnectionStatus.Error && walletNetworkId !== network.id) {
-			setErrorMsg(`Connected to the wrong network "${walletNetworkId}". please switch to "${network.id}" in your wallet.`)
-			setStatus(WalletConnectionStatus.Error);
-		} else if(status !== WalletConnectionStatus.Connected){
-			setStatus(WalletConnectionStatus.Connected);
+   // Update account balance 
+    const updateAccountBalance = async function(){
+        if (!aeSdk.current) return;
+        const _address: any = await aeSdk.current.address()
+        const _balance: any = await aeSdk.current.getBalance(_address, {
+            format: AE_AMOUNT_FORMATS.AE
+        });
+        setBalance(_balance);
+    }
 
-			
-            const c = await aeSdk.current.getContractInstance({aci: JSON.parse(ACI), contractAddress}); 
-            setContract(c);
+    // Get wallet account details 
+    const fetchAccountDetails = async function (walletNetworkId: string) {
+        if (!aeSdk.current) return;
+        if (status !== WalletConnectionStatus.Error && walletNetworkId !== network.id) {
+            setErrorMsg(`Connected to the wrong network "${walletNetworkId}". please switch to "${network.id}" in your wallet.`)
+            setStatus(WalletConnectionStatus.Error);
+        } else if(status !== WalletConnectionStatus.Connected){
+            setStatus(WalletConnectionStatus.Connected);
+            let contractAddress = 'ct_tPjW65n8wYL5MkiNYgQq4hACiAi4YX3557xV38CriEutwKq4H'
+            const contractInstance = await aeSdk.current.getContractInstance({aci: JSON.parse(ACIJson), contractAddress}); 
+            setContract(contractInstance);
             updateAccountBalance();
-            updateContractBalance();
-		}
-	}
-
-	const deleteVoiceRecord = async function (id:string) {
-       console.log((await contract.methods.delete_voice_record(parseInt(id)) ).decodedResult)
-    }
-     
-	const answerVoiceQuestion = async function (id:string) {
-       console.log((await contract.methods.answer_question(parseInt(id), ans) ).decodedResult)
-    }
-    
-
-    const updateContractBalance = async function(){
-        const balance = (await contract.methods.check_contract_balance()).decodedResult
-        console.log(balance);
-        setContractBalance(balance);
-    }
-
-	const updateVoiceRecord = async function () {
-       console.log((await contract.methods.update_voice_record(voiceID, voiceLink, reward, maxReward, answer) ).decodedResult)
-    }
-    
-	const createVoiceRecord = async function () {
-        if(!voiceLink || !reward || !maxReward || !answer) {
-            alert('Please insert all input');
-            return false;
         }
+    }   
 
-       console.log((await contract.methods.create_voice_record(voiceLink, reward, maxReward, answer) ).decodedResult)
-    }
-    
-	const answerQuestion = async function () {
-        console.log((await contract.methods.answer_question() ).decodedResult)
-     }
-
-	const depositContract = async function () {
-       console.log((await contract.methods.deposit_to_contract({ amount: deposit }) ).decodedResult)
-       updateAccountBalance()
-       updateContractBalance()
-    }
-    
-	const clearPlayer = async function () {
-       console.log((await contract.methods.clear_completed_player()).decodedResult)
-    }
-    
-	const uploadFile = async function () {
-
-        const client = new Web3Storage({ token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDFjMzYzMmY5MmNlOWQ4NTU4QzIyOWFGMzg1ZmM1MDg4ODYyNGVDNzYiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjM0Njk5NDQyOTgsIm5hbWUiOiJEZW1vIn0.OE6oIkfAJf24E-MPCrV4jfhPy2fNV4RaJGtWXGKCKg4" })
-        const cid = await client.put(selectedFile)
-        setVoiceLink("https://" + cid + ".ipfs.w3s.link/" + selectedFile[0].name)
-
-    }
-
-    const handleReward = function( val:string ){
-        const value = Math.max(1, Math.min(10000000000000000, Number(val)));
-        setReward(value.toString());
-    }
-
+    // Check ae client and fetch wallet account details 
 	useEffect(() => {
 		if (clientReady && client) {
 			aeSdk.current = client.current.aeSdk;
-
-      if (!aeSdk.current) return;
+        if (!aeSdk.current) return;
 			aeSdk.current.onNetworkChange = (params) => fetchAccountDetails(params.networkId);
 			fetchAccountDetails(client.current.walletNetworkId);
 		}
 	}, [clientReady, client]);
 
+    // If contract found then get voice records 
 	useEffect(() => {
-        if(contract)
+        if(contract){
             getVoiceRecords()
+        }
 	}, [contract]);
 
 
+    if(voiceRecords){
 
-    if(false){
+        // Start recognize voice
+        recognition.start()
+        recognition.onresult = (event) => {
+            //handle result in here
+            let word = event.results[0][0].transcript
+            console.log(word);
+            recognition.onerror = function (event) {};
+            recognition.onend = function() {
+                recognition.start();
+            };
+        }
 
         voiceRecords.forEach((record, index) => {
-            arr.push(
-              <div key={index}>
-                 <b> Link : {record.voice_link} </b>
-                 <audio controls>
-                <source src={record.voice_link} type="audio/mpeg"/>
-                Your browser does not support the audio element.
-                </audio>
-                 <b> Reward : {parseInt(record.reward)} </b>
-                 <b> Max Reward : {parseInt(record.max_reward)} </b>
-                 <b> Answer : {record.answer} </b>
-
-                 ANs : <input  type="text" onChange={e => setAns(e.target.value)} />
-                 <button onClick={() => {answerVoiceQuestion(record.id)}}>Answer</button> 
-                 <button  onClick={() => {deleteVoiceRecord(record.id)}}>Delete</button> 
+            if(voiceArrCheck === null )
+                setVoiceArrCheck('1');
+            voiceArr.push(
+              <div className='voice-item' key={index}>
+                    <audio controls>
+                    <source src={record.voice_link} type="audio/mpeg"/>
+                    Your browser does not support the audio element.
+                    </audio>
+                    <div> <p> Reward </p> <b> Æ {parseFloat(record.reward)/ aenumber} </b></div>
+                    <div> <p> Max Reward </p> <b> Æ {parseFloat(record.max_reward)/ aenumber} </b></div>
+                    <div> <p> Answer </p> <b>{record.answer}</b></div>
               </div>
             );
         });
 
         return (
-            <div className="App">
-                <header className="App-header">
-                    <div>
-                        <b> Account Balance </b> 
-                    {JSON.stringify(balance)}
-                    </div>
-                    <div>
-                        <b> Contract Balance </b> 
-                    {JSON.stringify(contractBalance)}
-                    </div>
-                    <div>
-                        <b> Create voice record </b> 
-                        <input type="file" onChange={e => setSelectedFile(e.target.files)} /> 
-                        <button onClick={() => uploadFile()}> 
-                        Upload! 
-                        </button> 
-                        Link : <input type='text' onChange={e => setVoiceLink(e.target.value)}/> 
-                        Reward : <input type='number' step='0.01' max='0.01' value={reward} onChange={e => handleReward(e.target.value)}/> 
-                        Max Reward : <input type='number' onChange={e => setMaxReward(e.target.value)}/> 
-                        Answer :
-                        <select onChange={e => setAnswer(e.target.value)}>
-                            <option value='A'> A</option>
-                            <option value='B'> B</option>
-                            <option value='C'> C</option>
-                        </select>
-                        <button onClick={() => createVoiceRecord()}> Create voice record </button>
-                    </div>
-                    <div>
-                        <b> Get all voice record </b> 
-                        {arr}
-                    </div>
-                    <div>
-                        <b> Check contract balance </b> 
-                        <button onClick={() => updateContractBalance()}> Check contract balance</button>
-                    </div>
-                    <div>
-                        <b> Deposit to contract </b> 
-                        Amount : <input type='number' onChange={e => setDeposit(e.target.value)} />
-                        <button onClick={() => depositContract()}> Deposit </button> 
-                    </div>
-                    <div>
-                        <button onClick={() => clearPlayer()}> Clear Player Data </button>
-                    </div>
-                    <div>
-                        {status === WalletConnectionStatus.Error &&
-                            <div>
-                                <img src={logo} alt="logo" />
-                                <h6>{errorMsg}</h6>
+            <>
+                <div className="App">
+                    <header className="App-header">
+                        <div>
+                            <img src={logo}/>
+                        </div>
+                        <div>
+                            <a className='balance' href='#' > Account balance : Æ {parseFloat(balance).toFixed(5)} </a>
+                        </div>
+                    </header>
+                    <div className='App-body'>
+                        <div id='imageWrapperContainer'>
+                            <div id="imageWrapper">
+                                <img id='circle1' src={Circle1} />
+                                <img id='circle4' src={Circle1} />
+                                <img id='circle3' src={Circle1} />
+                                <img id='circle2' src={Circle2} />
+                                <div id='homeImage'>
+                                    <img src={HeaderImage}  />
+                                </div>
                             </div>
-                        }
-                    </div>
-                    <div>
-                        {status === WalletConnectionStatus.Connected &&
-                            <div>
-                                <img src={logo} alt="logo" />
-                                <h6>Account address: {address}</h6>
-                                <h6>Balance: {JSON.stringify(balance)}</h6>
+                        </div>
+                        <div id='voiceRecords'>
+                            <div id='voiceArrsection'>
+                                {voiceArrCheck === null ? 
+                                    <b id='noAd'> There is no ad content yet. Click on Create Ads button to create new ad content </b>
+                                    : voiceArr
+                                }
                             </div>
-                        }
+                        </div>
                     </div>
-                </header>
-            </div>
+                </div>
+            </>
         );
 
     }
-    else 
+    else {
+
         return (
             <div id='loader'>
                 <img src={logoBG} id='logoBg'/>
                 <img src={logoBody} id='logoBody'/>
+                {status !== WalletConnectionStatus.Connected ? 
+                    <p>
+                        No wallet detected, please download <a href='https://chrome.google.com/webstore/detail/superhero/mnhmmkepfddpifjkamaligfeemcbhdne/related' target="_blank">SuperHero Wallet</a> and connect to Æternity wallet
+                    </p>
+                    : 
+                    <p> Reload the page if it takes more than 3 seconds to load </p>
+                }
             </div>
         )
+      
+    }
 
 };
 
