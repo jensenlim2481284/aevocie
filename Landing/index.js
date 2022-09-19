@@ -253,7 +253,7 @@ $(document).on('mouseover','.nav-btn',function(){
       img.map.needsUpdate = true; 
 
       // plane
-      var plane = new THREE.Mesh(new THREE.PlaneGeometry(0.67, 0.67),img);
+      var plane = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.9),img);
       plane.overdraw = true;
       this.add(plane);
   
