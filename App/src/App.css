@@ -120,25 +120,34 @@ select, input{
 #voiceRecordsHeader{
     display: flex;
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 50px;
 }
 
 #voiceArrsection{
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    margin-top: 150px;
 }
 .voice-item{
-    width: 28%;
     padding: 35px 25px;
+    width: 50% !important;
+    max-width: 400px;
     background: rgb(15 11 26);
     border-radius: 15px;
     margin-right: 15px;
-
+    margin: auto !important;
+}
+.slick-slide > div {
+    text-align: center;
 }
 .voice-item audio{
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+    margin-top: 30px;
+}
+.slick-slider {
+    width: 100%;
 }
 
 #noAd{
@@ -148,16 +157,15 @@ select, input{
     transform: translate(-50%, -50%);
     font-weight: 300;
 }
-.voice-item div{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+.voice-item b{
+    font-size: 24px;
+    margin-bottom: 50px;
 }
 .voice-item p{
     margin:0;
-    margin-bottom: 5px;
-    font-size: 13px;
-    margin-top: 5px;
+    margin-bottom: 0px;
+    font-size: 15px;
 }
 .voice-item button{
     float: right;
@@ -405,13 +413,18 @@ optgroup {
 option { 
     color: black; 
 }
+.l{
+    text-align: left;
+    padding-top: 15px;
+    padding-bottom: 20px;
+}
 .ReactModal__Content {
     background: linear-gradient(100deg,#01000b,#180c21) !important;
-    text-align: center;
+    text-align: left;
     border-radius: 50px !important;
     border: 1px solid rgb(27, 19, 62) !important;
     max-width: 450px;
-    max-height: 450px;
+    max-height: 350px;
     margin: auto;
 }
 .ReactModal__Overlay {
@@ -440,17 +453,28 @@ option {
 }
 
 
+.ReactModal__Content h3{
+    font-size: 22px;
+    font-weight: 500;
+    margin-top: 35px;
+    margin-bottom: 10px;
+    text-align: center;
+    margin-top: 250px;
+    
+}
+
 .ReactModal__Content h2{
     font-size: 24px;
     font-weight: 700;
+    margin-top: 35px;
     margin-bottom: 10px;
-    margin-top: 230px;
 }
-
+.c{
+    text-align: center;
+}
 .ReactModal__Content p{
     font-size: 13px;
     font-weight: 300;
-    max-width: 80%;
     opacity: 0.8;
     margin: auto;
     margin-top: 0;
@@ -663,3 +687,32 @@ option {
     background: #3412a4;
   }
     
+
+
+
+
+
+
+  
+
+/**************************************************************************************
+
+                                        RESPONSIVE 
+
+**************************************************************************************/
+
+
+
+@media only screen and (max-width: 572px) {
+    .App{
+        width: 100%;
+        padding: 0;
+    }
+    .App-header{
+        justify-content: center;
+        margin-top: 50px;
+    }
+    .App-header img{
+        display: none
+    }
+}
