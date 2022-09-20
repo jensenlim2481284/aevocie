@@ -1,0 +1,131 @@
+
+
+@compiler >= 6
+
+include "String.aes"
+
+contract VoiceAeds =
+
+    record state = {
+        index : int, 
+        completed_player: map(string, address),
+        voice_records: map(int, voice_meta),
+        deployer: address       
+      }  
+
+    record voice_meta = {        
+        voice_link: string,
+        reward: int,
+        max_reward: int,
+        answer: string,        
+        id : int
+      }
+
+    // Init contract
+    stateful entrypoint init() = {
+        index = 1,
+        completed_player = {},
+        voice_records = {},
+        deployer = Call.caller       
+      }
+
+    // Get all voice records
+    public entrypoint get_voice_records() : map(int, voice_meta) =
+        state.voice_records
+
+        
+    // Get completed player list
+    public entrypoint get_completed_players() : map(string, address) =
+        state.completed_player
+
+    // Deposit money to the contract 
+    payable stateful entrypoint deposit_to_contract() : int =
+        Contract.balance
+
+    // Check contract balance
+    stateful entrypoint check_contract_balance(): int =
+        Contract.balance
+
+    // Create voice records 
+    public stateful entrypoint create_voice_record(link: string, reward: int, max_reward: int, answer: string) : bool =
+
+        //require(Call.caller == state.deployer, "Only owner can create voice record") 
+        let new_voice : voice_meta = {
+            voice_link = link,
+            reward = reward,
+            max_reward = max_reward,
+            answer = answer,
+            id = state.index
+          }
+        put(state{voice_records[state.index] = new_voice})
+        put(state{index = (state.index + 1)})
+        true
+        
+    // Delete voice record 
+    public stateful entrypoint delete_voice_record(id: int) : bool =
+
+        //require(Call.caller == state.deployer, "Only owner can delete voice record") 
+        let new_voice = Map.delete(id, state.voice_records)
+        put(state{voice_records = new_voice})
+        true
+
+    // Update voice record 
+    public stateful entrypoint update_voice_record(id: int, link: string, reward: int, max_reward:int, answer: string) : bool =
+
+        //require(Call.caller == state.deployer, "Only owner can update voice record") 
+        let new_voice : voice_meta = {
+            voice_link = link,
+            reward = reward,
+            max_reward = max_reward,
+            answer = answer,
+            id = id
+          }
+        put(state{voice_records[id] = new_voice})
+        true
+
+
+    // Answer voice record & get reward 
+    stateful entrypoint answer_question(id: int, ans: string) : bool =
+        
+        // Check if answer question before
+        let uid = String.concat(Int.to_str(id), Address.to_str(Call.caller))
+        require(!Map.member(uid, state.completed_player), "You have answered question before")
+
+        // Validate DNA        
+        require(Map.member(id, state.voice_records), "No record found")   
+
+        // Check max reward     
+        let voice_record = state.voice_records[id]
+        require((voice_record.max_reward - voice_record.reward) >= 0, "No reward left")  
+
+        // Check if answer correct 
+        if(ans == voice_record.answer)
+
+            // Send reward to caller 
+            Chain.spend(Call.caller, voice_record.reward)
+
+            // Update max reward            
+            let new_voice : voice_meta = {
+                voice_link = voice_record.voice_link,
+                reward = voice_record.reward,
+                max_reward = voice_record.max_reward - voice_record.reward,
+                answer = voice_record.answer,
+                id = voice_record.id
+              }
+            put(state{voice_records[id] = new_voice})
+        
+            // Update completed player
+            put(state{completed_player[uid] = Call.caller})
+
+            true
+        else 
+            false
+
+
+
+    // Clear completed player
+    public stateful entrypoint clear_completed_player() : bool =
+        //require(Call.caller == state.deployer, "Only owner can clear completed player") 
+        put(state{completed_player = {}})
+        true
+    
